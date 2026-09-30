@@ -1,0 +1,11 @@
+.env
+*.pickle
+client_secret*.json
+token*.json
+venv/
+__pycache__/
+*.pyc
+data/
+*.crt
+*.key
+SUBIR_A_GITHUB.md

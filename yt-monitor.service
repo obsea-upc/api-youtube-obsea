@@ -1,0 +1,45 @@
+# /etc/systemd/system/yt-monitor.service
+#
+# Corre la API como usuario sin privilegios y con el sandbox de systemd.
+# Si alguien consigue ejecución de código dentro del proceso, se encuentra
+# con un sistema de archivos casi todo en solo lectura y sin root.
+
+[Unit]
+Description=YouTube Monitor API
+After=network.target
+
+[Service]
+Type=simple
+User=ytmonitor
+Group=ytmonitor
+WorkingDirectory=/opt/yt-monitor
+
+# El .env debe ser 600 y propiedad de ytmonitor
+EnvironmentFile=/opt/yt-monitor/.env
+
+ExecStart=/opt/yt-monitor/venv/bin/gunicorn \
+    --workers 1 \
+    --bind 127.0.0.1:5000 \
+    --timeout 60 \
+    --access-logfile - \
+    app:app
+
+Restart=always
+RestartSec=10
+
+# --- Sandboxing ---
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/yt-monitor/data
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictAddressFamilies=AF_INET AF_INET6
+RestrictNamespaces=true
+LockPersonality=true
+MemoryDenyWriteExecute=true
+
+[Install]
+WantedBy=multi-user.target
