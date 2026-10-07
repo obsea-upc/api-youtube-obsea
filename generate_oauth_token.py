@@ -39,10 +39,12 @@ READONLY_SCOPES = ["https://www.googleapis.com/auth/youtube.readonly"]
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--client-secrets", required=True,
-                         help="Ruta al client_secret.json (Desktop app)")
-    parser.add_argument("--token-out", required=True,
-                         help="Ruta donde guardar el token.pickle resultante")
+    parser.add_argument("--client-secrets", default="./client_secret.json",
+                         help="Ruta al client_secret.json (Desktop app). "
+                              "Por defecto: ./client_secret.json")
+    parser.add_argument("--token-out", default="./data/oauth_readonly_token.pickle",
+                         help="Ruta donde guardar el token.pickle resultante. "
+                              "Por defecto: ./data/oauth_readonly_token.pickle")
     args = parser.parse_args()
 
     if not os.path.exists(args.client_secrets):

@@ -1,0 +1,39 @@
+# Generado automáticamente por install.sh — no lo edites a mano,
+# los cambios se perderían si se vuelve a ejecutar el instalador.
+
+[Unit]
+Description=YouTube Monitor API
+After=network.target
+
+[Service]
+Type=simple
+User=ytmonitor
+Group=ytmonitor
+WorkingDirectory={{APP_DIR}}
+EnvironmentFile={{APP_DIR}}/.env
+
+ExecStart={{APP_DIR}}/venv/bin/gunicorn \
+    --workers 1 \
+    --bind 127.0.0.1:5000 \
+    --timeout 60 \
+    --access-logfile - \
+    app:app
+
+Restart=always
+RestartSec=10
+
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths={{APP_DIR}}/data
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictAddressFamilies=AF_INET AF_INET6
+RestrictNamespaces=true
+LockPersonality=true
+MemoryDenyWriteExecute=true
+
+[Install]
+WantedBy=multi-user.target
